@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Chat</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/emojione/2.2.6/assets/css/emojione.min.css" />
+    <style>
+        html,
+        body {
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div class="nav-wrapper">
+            <nav>
+                <div class="nav-wrapper">
+                    <ul class="right">
+                        <li><a href="#!" class="start"><i class="material-icons">start</i></a></li>
+                        <li><a href="#!" class="stop"><i class="material-icons">stop</i></a></li>
+                        <li><a href="#!" class="refresh"><i class="material-icons">refresh</i></a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </nav>
+    <!--img id="imgb64" style="width: 100%;" /-->
+    <canvas id="viewer" style="width: 100%;"></canvas>
+    <script src="/js/jquery-2.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        /**
+            CONSTANTS
+        */
+
+        const INIT_CONNECTION = "initconnection"
+        const START_STREAM = "startstream"
+        const STOP_STREAM = "stopstream"
+        const CONTINUE_STREAM = "continuestream"
+        const READY_STREAM = "readystream"
+        const FROM = "CLIENT"
+
+
+        var DRAW_IMAGE = true;
+        var viewer = document.getElementById("viewer");
+        var ctx = viewer.getContext("2d");
+        var conn;
+        var ClientID = '';
+        function initConnection() {
+            conn = new WebSocket("ws://" + document.location.host + "/ws");
+            conn.onclose = function (evt) {
+                /*var item = document.createElement("div");
+                item.innerHTML = "<b>Connection closed.</b>";
+                appendLog(item);*/
+                console.log("Connection Closed", evt);
+            };
+            conn.onmessage = function (evt) {
+                var data = JSON.parse(evt.data);
+                console.log(data)
+                switch (data.type) {
+                    case INIT_CONNECTION:
+                        ClientID = data.message;
+                        break;
+                    case READY_STREAM:
+                        console.log("Already Running")
+                        break;
+                    case START_STREAM:
+                        DRAW_IMAGE = true;
+                        if (DRAW_IMAGE) {
+                            var img64 = new Image();
+                            img64.onload = function () {
+                                viewer.width = window.outerWidth;
+                                viewer.height = window.outerHeight - 65;
+                                ctx.drawImage(img64, 0, 0);
+                            };
+                            img64.src = `data:image/png;base64,${data.message}`;
+                        }
+                        break;
+                    case STOP_STREAM:
+                        DRAW_IMAGE = false;
+                        setTimeout(() => {
+                            ctx.clearRect(0, 0, viewer.width, viewer.height);
+                        }, 500)
+                        //ClientID = data.message;
+                        break;
+                    default:
+
+                        break;
+                }
+            };
+        }
+
+        function send(msg) {
+            conn.send(JSON.stringify(msg))
+        }
+        initConnection();
+        $('.refresh').click(function () {
+            if (conn) {
+                DRAW_IMAGE = false;
+                ctx.clearRect(0, 0, viewer.width, viewer.height);
+                //Close prev connection if exists
+                conn.close();
+            }
+            initConnection()
+        })
+        $('.start').click(function () {
+            send({
+                type: START_STREAM,
+                message: '',
+                to: ClientID,
+                from: FROM
+            });
+        });
+        $('.stop').click(function () {
+            send({
+                type: STOP_STREAM,
+                message: '',
+                to: ClientID,
+                from: FROM
+            });
+        });
+
+    </script>
+    <style>
+        #dropdown1 {
+            left: auto !important;
+            right: 5px;
+            top: -65px;
+        }
+    </style>
+</body>
+
+</html>
