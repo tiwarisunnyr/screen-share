@@ -1,9 +1,11 @@
 package main
 
 import (
-	"./server"
+	disk "./diskmanagement"
+	server "./server"
 )
 
 func main() {
 	server.InitServer()
+	disk.GetDrives()
 }

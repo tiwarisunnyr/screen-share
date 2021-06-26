@@ -3,14 +3,12 @@ package server
 import (
 	"log"
 	"net/http"
-	"time"
 
-	"../server/utils"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 )
 
-const (
+/*const (
 	// Time allowed to write a message to the peer.
 	writeWait = 10 * time.Second
 
@@ -21,13 +19,13 @@ const (
 	pingPeriod = (pongWait * 9) / 10
 
 	// Maximum message size allowed from peer.
-	maxMessageSize = 512
-)
+	maxMessageSize = 1024
+)*/
 
-var (
+/*var (
 	newline = []byte{'\n'}
 	space   = []byte{' '}
-)
+)*/
 
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
@@ -36,12 +34,12 @@ var upgrader = websocket.Upgrader{
 
 // Client is a middleman between the websocket connection and the hub.
 type Client struct {
-	hub            *Hub // The websocket connection.
-	conn           *websocket.Conn
-	send           chan []byte // Buffered channel of outbound messages.
-	stream         chan *utils.Message
-	continueStream bool
-	id             string // Id : Client UniqueIdentifier
+	hub  *Hub // The websocket connection.
+	conn *websocket.Conn
+	send chan []byte // Buffered channel of outbound messages.
+	//stream         chan *Message
+	//continueStream bool
+	id string // Id : Client UniqueIdentifier
 }
 
 func (c *Client) readPump() {
@@ -49,13 +47,13 @@ func (c *Client) readPump() {
 		c.hub.unregister <- c
 		c.conn.Close()
 	}()
-	c.conn.SetReadLimit(maxMessageSize)
-	c.conn.SetReadDeadline(time.Now().Add(pongWait))
-	c.conn.SetPongHandler(func(string) error { c.conn.SetReadDeadline(time.Now().Add(pongWait)); return nil })
+	//c.conn.SetReadLimit(maxMessageSize)
+	//c.conn.SetReadDeadline(time.Now().Add(pongWait))
+	//c.conn.SetPongHandler(func(string) error { c.conn.SetReadDeadline(time.Now().Add(pongWait)); return nil })
 	for {
-		incMsg := utils.Message{}
+		incMsg := &Message{}
 		err := c.conn.ReadJSON(&incMsg)
-		log.Println(&incMsg)
+		//log.Println(&incMsg)
 		if err != nil {
 			log.Printf("error: %v", err)
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
@@ -67,7 +65,7 @@ func (c *Client) readPump() {
 	}
 }
 
-func (c *Client) writePump() {
+/*func (c *Client) writePump() {
 	ticker := time.NewTicker(pingPeriod)
 	defer func() {
 		ticker.Stop()
@@ -109,7 +107,7 @@ func (c *Client) writePump() {
 		}
 	}
 }
-
+*/
 // serveWs handles websocket requests from the peer.
 func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
@@ -125,10 +123,10 @@ func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 	log.Println("New Client Connected: " + connectionID)
 
 	// Send Accepted connection request
-	conn.WriteJSON(&utils.Message{To: connectionID, Message: connectionID, Type: INIT_CONNECTION, From: "SERVER"})
+	conn.WriteJSON(&Message{To: connectionID, Message: connectionID, Type: INIT_CONNECTION, From: "SERVER"})
 
 	// Allow collection of memory referenced by the caller by doing all work in
 	// new goroutines.
-	go client.writePump()
+	//go client.writePump()
 	go client.readPump()
 }

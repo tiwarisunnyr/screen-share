@@ -33,7 +33,7 @@ func DifferentialCapture() (bool, string) {
 	bounds := screenshot.GetDisplayBounds(0)
 	img, err := screenshot.CaptureRect(bounds)
 	if err != nil {
-		fmt.Println(err.Error)
+		fmt.Println(err.Error())
 		panic(err)
 	}
 	var sendImage = true
@@ -42,7 +42,7 @@ func DifferentialCapture() (bool, string) {
 	h := sha1.New()
 	h.Write(buff.Bytes())
 
-	curHash := h.Sum(nil)
+	curHash := h.Sum([]byte("a"))
 	if prevScreenHash == nil {
 		prevScreenHash = curHash
 	} else {

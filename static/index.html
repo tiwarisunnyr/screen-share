@@ -1,140 +1,143 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" class=" scrollbar-type-1 sb-cyan">
 <head>
-    <meta charset="UTF-8">
-    <title>Viewer</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/emojione/2.2.6/assets/css/emojione.min.css" />
-    <style>
-        html,
-        body {
-            padding: 0;
-            margin: 0;
-        }
-    </style>
+    <!-- Metro 4 -->
+    <link rel="stylesheet" href="vendors/metro4/css/metro-all.min.css">
+    <link rel="stylesheet" href="css/index.css">
+
+    <title>Timon - Remote Management Suite</title>
 </head>
-
-<body>
-    <nav>
-        <div class="nav-wrapper">
-            <nav>
-                <div class="nav-wrapper">
-                    <ul class="right">
-                        <li><a href="#!" class="start"><i class="material-icons">start</i></a></li>
-                        <li><a href="#!" class="stop"><i class="material-icons">stop</i></a></li>
-                        <li><a href="#!" class="refresh"><i class="material-icons">refresh</i></a></li>
-                    </ul>
-                </div>
-            </nav>
+<body class="m4-cloak h-vh-100">
+<div data-role="navview" data-toggle="#paneToggle" data-expand="xl" data-compact="lg" data-active-state="true">
+    <div class="navview-pane">
+        <div class="bg-cyan d-flex flex-align-center">
+            <button class="pull-button m-0 bg-darkCyan-hover">
+                <span class="mif-menu fg-white"></span>
+            </button>
+            <h2 class="text-light m-0 fg-white pl-7" style="line-height: 52px">Timon</h2>
         </div>
-    </nav>
-    <!--img id="imgb64" style="width: 100%;" /-->
-    <canvas id="viewer" style="width: 100%;"></canvas>
-    <script src="/js/jquery-2.1.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <script>
-        /**
-            CONSTANTS
-        */
 
-        const INIT_CONNECTION = "initconnection"
-        const START_STREAM = "startstream"
-        const STOP_STREAM = "stopstream"
-        const CONTINUE_STREAM = "continuestream"
-        const READY_STREAM = "readystream"
-        const FROM = "CLIENT"
+        <div class="suggest-box">
+            <div class="data-box">
+                <img src="images/jek_vorobey.jpg" class="avatar">
+                <div class="ml-4 avatar-title flex-column">
+                    <a href="#" class="d-block fg-white text-medium no-decor"><span class="reduce-1">Sunny Tiwari</span></a>
+                    <p class="m-0"><span class="fg-green mr-2">&#x25cf;</span><span class="text-small">online</span></p>
+                </div>
+            </div>
+            <img src="images/jek_vorobey.jpg" class="avatar holder ml-2">
+        </div>
+
+        <div class="suggest-box">
+            <input type="text" data-role="input" data-clear-button="false" data-search-button="true">
+            <button class="holder">
+                <span class="mif-search fg-white"></span>
+            </button>
+        </div>
+
+        <ul class="navview-menu mt-4" id="side-menu">
+            <li class="item-header">NAVIGATION</li>
+            <li>
+                <a href="#dashboard">
+                    <span class="icon"><span class="mif-meter"></span></span>
+                    <span class="caption">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="dropdown-toggle">
+                    <span class="icon"><span class="mif-versions"></span></span>
+                    <span class="caption">Remote Access</span>
+                </a>
+                <ul class="navview-menu stay-open" data-role="dropdown">
+                    <li><a href="#">
+                        <span class="icon"><span class="mif-user-plus"></span></span>
+                        <span class="caption">Add New Connection</span>
+                    </a></li>
+                    <li><a href="#screen">
+                        <span class="icon"><span class="mif-cast"></span></span>
+                        <span class="caption">Connect With Client</span>
+                    </a></li>
+                </ul>
+            </li>            
+        </ul>
+
+        <div class="w-100 text-center text-small data-box p-2 border-top bd-grayMouse" style="position: absolute; bottom: 0">
+            
+        </div>
+    </div>
+
+    <div class="navview-content h-100" style="overflow-y: auto;">
+        <div data-role="appbar" class="pos-absolute bg-darkCyan fg-white">
+            <a href="#" class="app-bar-item d-block d-none-lg" id="paneToggle"><span class="mif-menu"></span></a>
+            <div class="app-bar-container ml-auto">
+                <a href="#" class="app-bar-item">
+                    <span class="mif-envelop"></span>
+                    <span class="badge bg-green fg-white mt-2 mr-1">4</span>
+                </a>
+                <a href="#" class="app-bar-item">
+                    <span class="mif-bell"></span>
+                    <span class="badge bg-orange fg-white mt-2 mr-1">10</span>
+                </a>
+                <a href="#" class="app-bar-item">
+                    <span class="mif-flag"></span>
+                    <span class="badge bg-red fg-white mt-2 mr-1">9</span>
+                </a>
+                <div class="app-bar-container">
+                    <a href="#" class="app-bar-item">
+                        <img src="images/jek_vorobey.jpg" class="avatar">
+                        <span class="ml-2 app-bar-name">Jack Sparrow</span>
+                    </a>
+                    <div class="user-block shadow-1" data-role="collapse" data-collapsed="true">
+                        <div class="bg-darkCyan fg-white p-2 text-center">
+                            <img src="images/jek_vorobey.jpg" class="avatar">
+                            <div class="h4 mb-0">Jack Sparrow</div>
+                            <div>Pirate captain</div>
+                        </div>
+                        <div class="bg-white d-flex flex-justify-between flex-equal-items p-2">
+                            <button class="button flat-button">Followers</button>
+                            <button class="button flat-button">Sales</button>
+                            <button class="button flat-button">Friends</button>
+                        </div>
+                        <div class="bg-white d-flex flex-justify-between flex-equal-items p-2 bg-light">
+                            <button class="button mr-1">Profile</button>
+                            <button class="button ml-1">Sign out</button>
+                        </div>
+                    </div>
+                </div>
+                <a href="#" class="app-bar-item">
+                    <span class="mif-cogs"></span>
+                </a>
+            </div>
+        </div>
+        <div class="row border-bottom bd-lightGray m-3">
+            <div class="cell-md-4 d-flex flex-align-center">
+                <h3 class="dashboard-section-title  text-center text-left-md w-100">Pandora <small>Version 1.0</small></h3>
+            </div>
+        
+            <div class="cell-md-8 d-flex flex-justify-center flex-justify-end-md flex-align-center">
+                <ul class="breadcrumbs bg-transparent">
+                    <li class="page-item"><a href="#" class="page-link"><span class="mif-meter"></span></a></li>
+                    <li class="page-item"><a href="#" class="page-link">Dashboard</a></li>
+                </ul>
+            </div>
+        </div>        
+        <div id="content-wrapper" class="content-inner h-100"></div>
+    </div>
+</div>
 
 
-        var DRAW_IMAGE = true;
-        var viewer = document.getElementById("viewer");
-        var ctx = viewer.getContext("2d");
-        var conn;
-        var ClientID = '';
-        function initConnection() {
-            conn = new WebSocket("ws://" + document.location.host + "/ws");
-            conn.onclose = function (evt) {
-                /*var item = document.createElement("div");
-                item.innerHTML = "<b>Connection closed.</b>";
-                appendLog(item);*/
-                console.log("Connection Closed", evt);
-            };
-            conn.onmessage = function (evt) {
-                var data = JSON.parse(evt.data);
-                console.log(data)
-                switch (data.type) {
-                    case INIT_CONNECTION:
-                        ClientID = data.message;
-                        break;
-                    case READY_STREAM:
-                        console.log("Already Running")
-                        break;
-                    case START_STREAM:
-                        DRAW_IMAGE = true;
-                        if (DRAW_IMAGE) {
-                            var img64 = new Image();
-                            img64.onload = function () {
-                                viewer.width = window.outerWidth;
-                                viewer.height = window.outerHeight - 65;
-                                ctx.drawImage(img64, 0, 0);
-                            };
-                            img64.src = `data:image/png;base64,${data.message}`;
-                        }
-                        break;
-                    case STOP_STREAM:
-                        DRAW_IMAGE = false;
-                        setTimeout(() => {
-                            ctx.clearRect(0, 0, viewer.width, viewer.height);
-                        }, 500)
-                        //ClientID = data.message;
-                        break;
-                    default:
-
-                        break;
-                }
-            };
-        }
-
-        function send(msg) {
-            conn.send(JSON.stringify(msg))
-        }
-        initConnection();
-        $('.refresh').click(function () {
-            if (conn) {
-                DRAW_IMAGE = false;
-                ctx.clearRect(0, 0, viewer.width, viewer.height);
-                //Close prev connection if exists
-                conn.close();
-            }
-            initConnection()
-        })
-        $('.start').click(function () {
-            send({
-                type: START_STREAM,
-                message: '',
-                to: ClientID,
-                from: FROM
-            });
-        });
-        $('.stop').click(function () {
-            send({
-                type: STOP_STREAM,
-                message: '',
-                to: ClientID,
-                from: FROM
-            });
-        });
-
-    </script>
-    <style>
-        #dropdown1 {
-            left: auto !important;
-            right: 5px;
-            top: -65px;
-        }
-    </style>
+<!-- jQuery first, then Metro UI JS -->
+<script src="vendors/jquery/jquery-3.4.1.min.js"></script>
+<script src="vendors/metro4/js/metro.min.js"></script>
+<script src="js/websocketclient.js"></script>
+<script src="js/constants.js"></script>
+<script src="js/screenstream.js"></script>
+<script src="js/uievents.js"></script>
+<script src="js/main.js"></script>
+<script src="js/index.js"></script>
 </body>
-
 </html>
