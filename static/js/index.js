@@ -1,4 +1,6 @@
 let wsClient = new WebSocketClient();
+let remoteObject = new ScreenStream();
+let fileManagement = new FileManagement();
 
 $(function(){
     var hash = location.hash;
@@ -11,7 +13,6 @@ $(function(){
     wsClient.initConnection(); //create websocket connection
 
     function getContent(target){
-        window.on_page_functions = [];
         $.get('/pages/'+target + ".html?"+$.now()).then(
             function(response){
                 $("#content-wrapper").html(response);

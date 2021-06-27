@@ -1,16 +1,16 @@
 //WS Constants
-const INIT_CONNECTION = "initconnection";
-const ACK_RESPONSE = "ackresponse";
+const INIT_CONNECTION = "1";
+const ACK_RESPONSE = "2";
 
 //Remote Constants
-const START_STREAM = "startstream";
-const STOP_STREAM = "stopstream";
-const CONTINUE_STREAM = "continuestream";
-const READY_STREAM = "readystream";
+const START_STREAM = "11";
+const STOP_STREAM = "12";
+const CONTINUE_STREAM = "13";
+const READY_STREAM = "14";
 
 //File Explorer Constants
-const LIST_DRIVE = "listdrive";
-const FETCH_DRIVE = "fetchdrive";
+const LIST_DRIVE = "31";
+const FETCH_DRIVE = "32";
 
 const FROM = "CLIENT";
 

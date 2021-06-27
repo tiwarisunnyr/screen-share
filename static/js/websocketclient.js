@@ -20,26 +20,26 @@ function WebSocketClient() {
                 console.log("Already Running")
                 break;
             case START_STREAM:
-                drawScreen(data);
+                remoteObject.drawScreen(data);
                 break;
             case STOP_STREAM:
-                clearScreen();
+                remoteObject.clearScreen();
                 break;
             case LIST_DRIVE:
-                listDrive();
+                fileManagement.FillDrives(Metro.getPlugin('#localdrives', 'listview'), JSON.parse(data.message));                
                 break;
             default:
 
                 break;
         }
-        instance.sendAck();
+        //instance.sendAck();
     };
 
     this.send = function (msg) {
         instance.conn.send(JSON.stringify(msg))
     };
 
-    this.sendAck = function(){
+    this.sendAck = function () {
         instance.conn.send(JSON.stringify({
             type: ACK_RESPONSE,
             message: '',

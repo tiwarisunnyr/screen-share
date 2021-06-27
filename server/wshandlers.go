@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	capture "../capture"
+	"../capture"
+	"../diskmanagement"
 )
 
 var streamingClients map[string]bool = make(map[string]bool)
@@ -15,7 +16,9 @@ func HandleClientMessage(h *Hub, clientmessage *Message) {
 	for client := range h.clients {
 		if client.id == clientmessage.To {
 			log.Println(clientmessage)
-			if clientmessage.Type == START_STREAM {
+
+			switch mtype := clientmessage.Type; mtype {
+			case START_STREAM:
 				if !streamingClients[client.id] {
 					streamingClients[client.id] = true
 					go func() {
@@ -32,7 +35,8 @@ func HandleClientMessage(h *Hub, clientmessage *Message) {
 						}
 					}()
 				}
-			} else if clientmessage.Type == STOP_STREAM {
+
+			case STOP_STREAM:
 				if streamingClients[client.id] {
 					streamingClients[client.id] = false
 					delete(streamingClients, client.id)
@@ -42,8 +46,17 @@ func HandleClientMessage(h *Hub, clientmessage *Message) {
 						break
 					}
 				}
+
+			case LIST_DRIVE:
+				log.Println("List Drives")
+				driveList := diskmanagement.GetDriveListJSON()
+				err := client.conn.WriteJSON(&Message{To: clientmessage.To, Message: driveList, Type: LIST_DRIVE, From: "SERVER"})
+				if err != nil {
+					log.Println(err.Error())
+					break
+				}
+
 			}
 		}
 	}
-
 }

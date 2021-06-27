@@ -7,11 +7,16 @@ import (
 )
 
 const (
-	INIT_CONNECTION = "initconnection"
-	START_STREAM    = "startstream"
-	STOP_STREAM     = "stopstream"
-	CONTINUE_STREAM = "continuestream"
-	READY_STREAM    = "readystream"
+	INIT_CONNECTION = "1"
+	ACK_RESPONSE    = "2"
+
+	START_STREAM    = "11"
+	STOP_STREAM     = "12"
+	CONTINUE_STREAM = "13"
+	READY_STREAM    = "14"
+
+	LIST_DRIVE = "31"
+	FETCH_PATH = "32"
 )
 
 var addr = flag.String("addr", ":5220", "http service address")
