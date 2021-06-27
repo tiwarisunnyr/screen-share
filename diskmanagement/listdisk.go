@@ -3,6 +3,7 @@ package diskmanagement
 import (
 	"encoding/json"
 	"math"
+	"runtime"
 
 	"github.com/shirou/gopsutil/v3/disk"
 )
@@ -17,20 +18,29 @@ type DriveDetails struct {
 }
 
 func GetDrives() []DriveDetails {
-	v, _ := disk.Partitions(true)
 	var driveList []DriveDetails
-
+	isWindowsSystem := false
+	if runtime.GOOS == "windows" {
+		isWindowsSystem = true
+	}
+	v, _ := disk.Partitions(true)
 	for i := 0; i < len(v); i++ {
 		usage, _ := disk.Usage(v[i].Mountpoint)
-		details := &DriveDetails{
-			MountPoint:   v[i].Mountpoint,
-			DisplayLabel: "Local Disk (" + v[i].Mountpoint + ")",
-			TotalBytes:   usage.Total,
-			UsedBytes:    usage.Used,
-			FreeBytes:    usage.Free,
-			PercentUsage: math.Round(usage.UsedPercent),
+		displayLabel := v[i].Mountpoint
+		if isWindowsSystem {
+			displayLabel = "Local Disk (" + v[i].Mountpoint + ")"
 		}
-		driveList = append(driveList, *details)
+		if usage.Total > 0 {
+			details := &DriveDetails{
+				MountPoint:   v[i].Mountpoint,
+				DisplayLabel: displayLabel,
+				TotalBytes:   usage.Total,
+				UsedBytes:    usage.Used,
+				FreeBytes:    usage.Free,
+				PercentUsage: math.Round(usage.UsedPercent),
+			}
+			driveList = append(driveList, *details)
+		}
 	}
 	return driveList
 }
