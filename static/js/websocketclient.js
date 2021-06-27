@@ -20,13 +20,13 @@ function WebSocketClient() {
                 console.log("Already Running")
                 break;
             case START_STREAM:
-                remoteObject.drawScreen(data);
+                remoteObject.drawScreen(ctx, data);
                 break;
             case STOP_STREAM:
-                remoteObject.clearScreen();
+                remoteObject.clearScreen(ctx);
                 break;
             case LIST_DRIVE:
-                fileManagement.FillDrives(Metro.getPlugin('#localdrives', 'listview'), JSON.parse(data.message));                
+                fileManagement.FillDrives(Metro.getPlugin('#localdrives', 'listview'), JSON.parse(data.message));
                 break;
             default:
 

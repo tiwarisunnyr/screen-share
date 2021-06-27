@@ -1,10 +1,9 @@
 class ScreenStream {
-    constructor(DrawContext) {
+    constructor() {
         let instance = this;
-        instance.drawContext = DrawContext;
         instance.DRAW_IMAGE = true;
         
-        instance.drawScreen = function (data) {
+        instance.drawScreen = function (context,data) {
             instance.DRAW_IMAGE = true;
             if (instance.DRAW_IMAGE) {
 
@@ -23,18 +22,18 @@ class ScreenStream {
                 ctx.fillRect(0, 0, refRes.w, refRes.height); // will fit any sized canvas*/
                 var img64 = new Image();
                 img64.onload = function () {
-                    instance.drawContext.canvas.width = img64.width;
-                    instance.drawContext.canvas.height = img64.height;
+                    context.canvas.width = img64.width;
+                    context.canvas.height = img64.height;
                     ctx.drawImage(img64, 0, 0);
                 };
                 img64.src = `data:image/png;base64,${data.message}`;
             }
         };
 
-        instance.clearScreen = function () {
+        instance.clearScreen = function (context) {
             instance.DRAW_IMAGE = false;
             setTimeout(() => {
-                instance.drawContext.clearRect(0, 0, instance.drawContext.canvas.width, instance.drawContext.canvas.height);
+                context.clearRect(0, 0, instance.drawContext.canvas.width, instance.drawContext.canvas.height);
             }, 500);
         };
 
