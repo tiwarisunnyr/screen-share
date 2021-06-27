@@ -30,16 +30,18 @@ func GetDrives() []DriveDetails {
 		if isWindowsSystem {
 			displayLabel = "Local Disk (" + v[i].Mountpoint + ")"
 		}
-		if usage.Total > 0 {
-			details := &DriveDetails{
-				MountPoint:   v[i].Mountpoint,
-				DisplayLabel: displayLabel,
-				TotalBytes:   usage.Total,
-				UsedBytes:    usage.Used,
-				FreeBytes:    usage.Free,
-				PercentUsage: math.Round(usage.UsedPercent),
+		if (!isWindowsSystem && v[i].Mountpoint == "/") || isWindowsSystem {
+			if usage.Total > 0 {
+				details := &DriveDetails{
+					MountPoint:   v[i].Mountpoint,
+					DisplayLabel: displayLabel,
+					TotalBytes:   usage.Total,
+					UsedBytes:    usage.Used,
+					FreeBytes:    usage.Free,
+					PercentUsage: math.Round(usage.UsedPercent),
+				}
+				driveList = append(driveList, *details)
 			}
-			driveList = append(driveList, *details)
 		}
 	}
 	return driveList
