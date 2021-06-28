@@ -28,6 +28,9 @@ function WebSocketClient() {
             case LIST_DRIVE:
                 fileManagement.FillDrives(Metro.getPlugin('#localdrives', 'listview'), JSON.parse(data.message));
                 break;
+            case FETCH_PATH:
+                fileManagement.FillDirectories(JSON.parse(data.message))
+                break;
             default:
 
                 break;

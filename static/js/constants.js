@@ -10,7 +10,7 @@ const READY_STREAM = "14";
 
 //File Explorer Constants
 const LIST_DRIVE = "31";
-const FETCH_DRIVE = "32";
+const FETCH_PATH = "32";
 
 const FROM = "CLIENT";
 

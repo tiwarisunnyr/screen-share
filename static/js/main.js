@@ -19,4 +19,10 @@ function initScreenUI() {
 
 function initFileUI(){
     fileManagement.ListDrive();
+    $('.change-view').click(function () {
+        var __view = $(this).attr('data-view');
+        $('.change-view').removeClass('bg-orange');
+        $(this).addClass('bg-orange');
+        $("#lstfileInfo").data("listview").view(__view);
+    });
 }

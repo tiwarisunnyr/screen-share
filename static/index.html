@@ -7,6 +7,7 @@
 
     <!-- Metro 4 -->
     <link rel="stylesheet" href="vendors/metro4/css/metro-all.min.css">
+    <link rel="stylesheet" href="vendors/fontawesome/css/all.min.css">
     <link rel="stylesheet" href="css/index.css">
 
     <title>Timon - Remote Management Suite</title>
@@ -144,11 +145,16 @@
         <div id="content-wrapper" class="content-inner h-100"></div>
     </div>
 </div>
-
+<style>
+    .progress .bar{
+        z-index: 1 !important;
+    }
+</style>
 
 <!-- jQuery first, then Metro UI JS -->
 <script src="vendors/jquery/jquery-3.4.1.min.js"></script>
 <script src="vendors/metro4/js/metro.min.js"></script>
+<script src="vendors/fontawesome/js/all.min.js"></script>
 <script src="js/websocketclient.js"></script>
 <script src="js/constants.js"></script>
 <script src="js/diskmgmt.js"></script>

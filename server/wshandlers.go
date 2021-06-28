@@ -35,7 +35,6 @@ func HandleClientMessage(h *Hub, clientmessage *Message) {
 						}
 					}()
 				}
-
 			case STOP_STREAM:
 				if streamingClients[client.id] {
 					streamingClients[client.id] = false
@@ -46,7 +45,6 @@ func HandleClientMessage(h *Hub, clientmessage *Message) {
 						break
 					}
 				}
-
 			case LIST_DRIVE:
 				log.Println("List Drives")
 				driveList := diskmanagement.GetDriveListJSON()
@@ -55,7 +53,15 @@ func HandleClientMessage(h *Hub, clientmessage *Message) {
 					log.Println(err.Error())
 					break
 				}
-
+			case FETCH_PATH:
+				log.Println("Fetch Path")
+				path := clientmessage.Message
+				directoryInfos := diskmanagement.GetDirectoryInfoJSON(path)
+				err := client.conn.WriteJSON(&Message{To: clientmessage.To, Message: directoryInfos, Type: FETCH_PATH, From: "SERVER"})
+				if err != nil {
+					log.Println(err.Error())
+					break
+				}
 			}
 		}
 	}

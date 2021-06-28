@@ -1,6 +1,99 @@
-<div class="row bg-white h-100">
-    <ul data-role="listview" style="width: 250px;border-right: 1px solid #d9d9d9;" data-view="content"
-        data-select-node="true" id="localdrives">
+<div class="h-100 pt-3 bg-white">
+    <nav data-role="ribbonmenu">
+        <ul class="tabs-holder">
+            <li class="static" id="menuDriveList"><a href="#">
+                    File
+                </a></li>
+            <li class="active"><a href="#section-group">View</a></li>
+        </ul>
+        <div class="content-holder">
+            <div class="section" id="section-group">
+                <div class="group">
+                    <div class="ribbon-toggle-group">
+                        <button class="ribbon-icon-button change-view" data-view="list">
+                            <span class="icon">
+                                <span class="mif-list"></span>
+                            </span>
+                            <span class="caption">List</span>
+                        </button>
 
-    </ul>
+                        <button class="ribbon-icon-button change-view" data-view="content">
+                            <span class="icon">
+                                <span class="mif-apps"></span>
+                            </span>
+                            <span class="caption">Content</span>
+                        </button>
+
+                        <button class="ribbon-icon-button change-view" data-view="icons">
+                            <span class="icon">
+                                <span class="mif-table"></span>
+                            </span>
+                            <span class="caption">Icons</span>
+                        </button>
+
+                        <button class="ribbon-icon-button change-view" data-view="icons-small">
+                            <span class="icon">
+                                <span class="mif-image"></span>
+                            </span>
+                            <span class="caption">Small icons</span>
+                        </button>
+
+                        <button class="ribbon-icon-button change-view" data-view="icons-large">
+                            <span class="icon">
+                                <span class="mif-images"></span>
+                            </span>
+                            <span class="caption">Large icons</span>
+                        </button>
+
+                        <button class="ribbon-icon-button change-view" data-view="tiles">
+                            <span class="icon">
+                                <span class="mif-windows"></span>
+                            </span>
+                            <span class="caption">Tiles</span>
+                        </button>
+                    </div>
+                    <span class="title">Layout</span>
+                </div>
+
+            </div>
+        </div>
+    </nav>
+    <div class="d-flex bg-white border bd-gray flex-content-start">
+        <div class="border border-right-none border-left-none border-top-none  border-bottom-none bd-gray"
+            style="padding-left: 10px;padding-right: 10px;">
+            <a href="#" id="windowBack" class="fg-gray">
+                <span class="icon">
+                    <span class="mif-arrow-left"></span>
+                </span>
+            </a>
+            &nbsp;
+            <a href="#" id="windowNxt" class="fg-gray">
+                <span class="icon">
+                    <span class="mif-arrow-right"></span>
+                </span>
+            </a>
+        </div>
+        &nbsp;
+        <div class="border border-right-none border-left border-top-none  border-bottom-none bd-gray">
+            &nbsp;<i class="fa fa-folder fg-darkyellow"></i>&nbsp;
+            <small id="windowPath"></small>
+        </div>
+    </div>
+    <div class="p-3">
+        <ul data-role="listview" id="lstfileInfo"></ul>
+    </div>
 </div>
+<aside class="sidebar pos-absolute z-2" id="sbDriveList" data-role="sidebar" data-toggle="#menuDriveList">
+    <div class="sidebar-header" data-image="images/sb-bg-1.jpg">
+        <!-- <a href="/" class="fg-red sub-action pr-6" onclick="Metro.getPlugin('#sbDriveList','sidebar').options('staticShift',true); return false;"><span
+                class="mif-pin mif-2x"></span></a>&nbsp; -->
+        <a href="/" class="fg-red sub-action" onclick="Metro.sidebar.close('#sbDriveList'); return false;"><span
+                class="mif-arrow-left mif-2x"></span></a>
+        <span class="title">OS: Windows 10</span>
+        <span class="subtitle">Processor: AMD Ryzen 5</span>
+    </div>
+    <div class="row bg-white h-100">
+        <ul data-role="listview" style="width:100%;" data-view="content" data-select-node="true" id="localdrives">
+        </ul>
+    </div>
+</aside>
