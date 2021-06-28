@@ -1,5 +1,11 @@
 var ctx, viewer, ClientID = '';
 
+var isFetching = false;
+var $windowBack = $('#windowBack');
+var $windowNxt = $('#windowNxt');
+var __dirIndex = -1;
+var __pathArr = [];
+
 //initScreenUI();
 //initConnection();
 function initScreenUI() {
@@ -17,12 +23,23 @@ function initScreenUI() {
     });
 }
 
-function initFileUI(){
-    fileManagement.ListDrive();
+function initFileUI() {
+    fileManagementUI.ListDrive();
+
     $('.change-view').click(function () {
         var __view = $(this).attr('data-view');
         $('.change-view').removeClass('bg-orange');
         $(this).addClass('bg-orange');
         $("#lstfileInfo").data("listview").view(__view);
+    });
+
+    $($windowBack)
+        .click(function () {
+            fileManagement.UIBackButtonClick()
+            return false;
+        });
+    $($windowNxt).click(function () {
+        fileManagement.UIForwardButtonClick();
+        return false;
     });
 }

@@ -1,20 +1,20 @@
 let wsClient = new WebSocketClient();
 let remoteObject = new ScreenStream();
-let fileManagement = new FileManagement();
+let fileManagementUI = new FileManagementUI();
 
-$(function(){
+$(function () {
     var hash = location.hash;
     var target = hash.length > 0 ? hash.substr(1) : "dashboard";
-    var link = $(".navview-menu a[href*="+target+"]");
+    var link = $(".navview-menu a[href*=" + target + "]");
     var menu = link.closest("ul[data-role=dropdown]");
     var node = link.parent("li").addClass("active");
 
-    
+
     wsClient.initConnection(); //create websocket connection
 
-    function getContent(target){
-        $.get('/pages/'+target + ".html?"+$.now()).then(
-            function(response){
+    function getContent(target) {
+        $.get('/pages/' + target + ".html?" + $.now()).then(
+            function (response) {
                 $("#content-wrapper").html(response);
                 initUIEvents(target);
             }
@@ -23,7 +23,7 @@ $(function(){
 
     getContent(target);
 
-    $(".navview-menu").on(Metro.events.click, "a", function(e){
+    $(".navview-menu").on(Metro.events.click, "a", function (e) {
         var href = $(this).attr("href");
         var pane = $(this).closest(".navview-pane");
         var hash;
@@ -41,5 +41,5 @@ $(function(){
         $(this).closest("li").addClass("active");
 
         return false;
-    });    
+    });
 });

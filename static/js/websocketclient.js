@@ -26,10 +26,10 @@ function WebSocketClient() {
                 remoteObject.clearScreen(ctx);
                 break;
             case LIST_DRIVE:
-                fileManagement.FillDrives(Metro.getPlugin('#localdrives', 'listview'), JSON.parse(data.message));
+                fileManagementUI.FillDrives(JSON.parse(data.message));
                 break;
             case FETCH_PATH:
-                fileManagement.FillDirectories(JSON.parse(data.message))
+                fileManagementUI.FillDirectories(JSON.parse(data.message))
                 break;
             default:
 
