@@ -64,6 +64,12 @@ func GetDriveListJSON() string {
 }
 
 func FetchDrives(root string) []DirectoryInfo {
+	log.Println(root)
+	if root == "" {
+		log.Println("Invalid value of root: " + root)
+		return nil
+	}
+
 	file, err := os.Open(root)
 	if err != nil {
 		log.Fatalf("failed opening directory: %s", err)
@@ -71,21 +77,29 @@ func FetchDrives(root string) []DirectoryInfo {
 	defer file.Close()
 
 	fileList, _ := file.Readdir(0)
-	var directoryInfos []DirectoryInfo
-	for _, files := range fileList {
-		directoryInfo := &DirectoryInfo{
-			FileName:     files.Name(),
-			FileSize:     uint64(files.Size()),
-			IsDir:        files.IsDir(),
-			CreatedDate:  files.ModTime(),
-			ModifiedDate: files.ModTime(),
+	if len(fileList) > 0 {
+		var directoryInfos []DirectoryInfo
+		for _, files := range fileList {
+			directoryInfo := &DirectoryInfo{
+				FileName:     files.Name(),
+				FileSize:     uint64(files.Size()),
+				IsDir:        files.IsDir(),
+				CreatedDate:  files.ModTime(),
+				ModifiedDate: files.ModTime(),
+			}
+			directoryInfos = append(directoryInfos, *directoryInfo)
 		}
-		directoryInfos = append(directoryInfos, *directoryInfo)
+		return directoryInfos
 	}
-	return directoryInfos
+	return nil
 }
 
 func GetDirectoryInfoJSON(root string) string {
-	jsonBytes, _ := json.Marshal(FetchDrives(root))
-	return string(jsonBytes)
+	var di = FetchDrives(root)
+	if di != nil {
+		jsonBytes, _ := json.Marshal(di)
+		return string(jsonBytes)
+	} else {
+		return string("[]")
+	}
 }

@@ -24,19 +24,37 @@ class FileManagement {
 class FileManagementUI {
 
     constructor() {
-        //this.instance = this;
         this.currentDirectory = '';
         this.isFetching = false;
         this.pathIndex = -1;
         this.pathArr = [];
-        this.UIBackButton = $('#windowBack');
-        this.UIForwardButton = $('#windowNxt');
-        this.UIWindowsPath = $('#windowPath');
+        this.UIBackButton;
+        this.UIForwardButton;
+        this.UIWindowsPath;
+        this.UIChangeView;
         this.fileManagement = new FileManagement();
     }
 
-    ListDrive() {
+    InitializeFileManager() {
+        this.UIBackButton = $('#windowBack');
+        this.UIForwardButton = $('#windowNxt');
+        this.UIWindowsPath = $('#windowPath');
+        this.UIChangeView = $('.change-view');
+
         this.fileManagement.ListDrive();
+        this.BindEvents();
+    }
+
+    FetchPath(path) {
+        if (this.isFetching)
+            return;
+
+        if ($.inArray(path, this.pathArr) == -1) {
+            this.pathIndex++;
+            this.pathArr.push(path);
+        }
+        this.fileManagement.FetchPath(path);
+        this.isFetching = true;
     }
 
     FillDrives(data) {
@@ -49,8 +67,10 @@ class FileManagementUI {
                 content: "<div class='mt-1' data-role='progress' data-value='" + v.percentusage + "' data-small='true'></div><div>" + formatBytes(v.freebytes, 2) + " free of " + formatBytes(v.totalsize, 0) + "</div>",
             });
             $(addedNode).click(function () {
+                instance.pathArr = [];
+                instance.pathIndex = -1;
                 instance.currentDirectory = v.mountpoint + '\\';
-                instance.fileManagement.FetchPath(instance.currentDirectory);
+                instance.FetchPath(instance.currentDirectory);
             });
         });
     }
@@ -59,6 +79,7 @@ class FileManagementUI {
         var instance = this;
         var ulfileInfo = Metro.getPlugin('#lstfileInfo', 'listview');
         $('#lstfileInfo').empty();
+
         data.forEach(function (v) {
             var addedNode = ulfileInfo.add(null, {
                 caption: v.filename,
@@ -78,48 +99,81 @@ class FileManagementUI {
             $(addedNode).dblclick(function () {
                 if (v.isdir) {
                     instance.currentDirectory += v.filename + '\\';
-                    instance.fileManagement.FetchPath(instance.currentDirectory);
+                    instance.FetchPath(instance.currentDirectory);
                 }
             });
         });
+
+        if (this.pathIndex > 0) {
+            this.UIBackButton.removeClass("fg-gray").addClass('fg-blue')
+        }
+
+        this.isFetching = false;
     }
 
     ShowInfo(data, sender, inplace) {
-        var __html = "Name : " + data.filename;
-        __html += '<br>Type : ' + (data.isdir ? 'File Folder' : 'File');
-        __html += '<br>Size : ' + (data.isdir ? 0 : formatBytes(data.size));
+        var fileInfo = `Name : ${data.filename}
+            <br>Type : ${(data.isdir ? 'File Folder' : 'File')}
+            <br>Size : ${(data.isdir ? 0 : formatBytes(data.size))}`;
 
         //if (inplace)
-        //    $('#fDetails').html(__html);
+        //    $('#fDetails').html(fileInfo);
 
-        $(sender).attr('title', __html.split('<br>').join('\n'));
+        $(sender).attr('title', fileInfo.split('<br>').join('\n'));
     }
 
-    UIBackButtonClick() {
-        if (this.isFetching)
-            return;
-        if (this.pathIndex === 0) {
-            return false;
-        }
-        this.pathIndex--;
-        this.currentDirectory = pathArr[instance.pathIndex];
-        this.fileManagement.FetchPath(instance.currentDirectory);
-        $($windowNxt).addClass('fg-blue');
-        $($windowNxt).removeClass('fg-gray');
-        this.isFetching = true;
+    BindUIBackButtonClick() {
+        let instance = this;
+
+        $(this.UIBackButton).click(function (e) {
+
+            if (instance.isFetching || instance.pathIndex <= 0)
+                return;
+
+            instance.pathIndex--;
+            instance.currentDirectory = instance.pathArr[instance.pathIndex];
+            instance.FetchPath(instance.currentDirectory);
+            instance.UIForwardButton.addClass('fg-blue').removeClass('fg-gray');
+            if (instance.pathIndex <= 0) {
+                instance.UIBackButton.removeClass('fg-blue').addClass('fg-gray');
+            }
+            instance.isFetching = true;
+        });
     }
 
-    UIForwardButtonClick() {
-        if (this.isFetching)
-            return;
-        if (this.pathIndex === this.pathArr.length - 1) {
-            return false;
-        }
-        this.pathIndex++;
-        $($windowBack).addClass('fg-blue');
-        $($windowBack).removeClass('fg-gray');
-        this.currentDirectory = pathArr[this.pathIndex];
-        this.fileManagement.FetchPath(this.currentDirectory);
-        this.isFetching = true;
+    BindUIForwardButtonClick() {
+        let instance = this;
+
+        $(this.UIForwardButton).click(function (e) {
+            if (instance.isFetching || instance.pathIndex === instance.pathArr.length - 1)
+                return;
+
+            instance.pathIndex++;
+            instance.UIBackButton.addClass('fg-blue').removeClass('fg-gray');
+            instance.currentDirectory = instance.pathArr[instance.pathIndex];
+            instance.FetchPath(instance.currentDirectory);
+            if (instance.pathIndex === instance.pathArr.length - 1) {
+                instance.UIForwardButton.removeClass('fg-blue').addClass('fg-gray')
+            }
+            instance.isFetching = true;
+        });
+    }
+
+    BindChangeView() {
+        $(this.UIChangeView).click(function (e) {
+            var newView = $(e.currentTarget).attr('data-view');
+            $("#lstfileInfo").data("listview").view(newView);
+        });
+    }
+
+    UIBindHTMLElement() {
+
+    }
+
+    BindEvents() {
+        this.BindChangeView();
+        this.BindUIBackButtonClick();
+        this.BindUIForwardButtonClick();
+        this.UIBindHTMLElement();
     }
 }
