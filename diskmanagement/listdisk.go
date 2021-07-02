@@ -2,10 +2,12 @@ package diskmanagement
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"math"
 	"os"
 	"runtime"
+	"strings"
 	"time"
 
 	"github.com/shirou/gopsutil/v3/disk"
@@ -31,8 +33,12 @@ type DirectoryInfo struct {
 func GetDrives() []DriveInfo {
 	var driveList []DriveInfo
 	isWindowsSystem := false
+	isDarwinSystem := false
 	if runtime.GOOS == "windows" {
 		isWindowsSystem = true
+	}
+	if runtime.GOOS == "darwin" {
+		isDarwinSystem = true
 	}
 	v, _ := disk.Partitions(true)
 	for i := 0; i < len(v); i++ {
@@ -41,7 +47,7 @@ func GetDrives() []DriveInfo {
 		if isWindowsSystem {
 			displayLabel = "Local Disk (" + v[i].Mountpoint + ")"
 		}
-		if (!isWindowsSystem && v[i].Mountpoint == "/") || isWindowsSystem {
+		if (!isWindowsSystem && v[i].Mountpoint == "/") || isDarwinSystem || isWindowsSystem {
 			if usage.Total > 0 {
 				details := &DriveInfo{
 					MountPoint:   v[i].Mountpoint,
@@ -64,11 +70,17 @@ func GetDriveListJSON() string {
 }
 
 func FetchDrives(root string) []DirectoryInfo {
-	log.Println(root)
-	if root == "" {
-		log.Println("Invalid value of root: " + root)
-		return nil
+
+	isWindowsSystem := true
+	if runtime.GOOS != "windows" {
+		isWindowsSystem = false
 	}
+
+	if !isWindowsSystem {
+		pathArr := strings.Split(root, "\\")
+		root = strings.Join(pathArr, "/")
+	}
+	fmt.Println(root)
 
 	file, err := os.Open(root)
 	if err != nil {
