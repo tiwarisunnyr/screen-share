@@ -2,8 +2,8 @@ class ScreenStream {
     constructor() {
         let instance = this;
         instance.DRAW_IMAGE = true;
-        
-        instance.drawScreen = function (context,data) {
+
+        instance.drawScreen = function (context, data) {
             instance.DRAW_IMAGE = true;
             if (instance.DRAW_IMAGE) {
 
@@ -33,7 +33,7 @@ class ScreenStream {
         instance.clearScreen = function (context) {
             instance.DRAW_IMAGE = false;
             setTimeout(() => {
-                context.clearRect(0, 0, instance.drawContext.canvas.width, instance.drawContext.canvas.height);
+                context.clearRect(0, 0, context.canvas.width, context.canvas.height);
             }, 500);
         };
 

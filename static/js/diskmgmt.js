@@ -79,7 +79,7 @@ class FileManagementUI {
         var instance = this;
         var ulfileInfo = Metro.getPlugin('#lstfileInfo', 'listview');
         $('#lstfileInfo').empty();
-
+        this.UIAddressBarElement();
         data.forEach(function (v) {
             var addedNode = ulfileInfo.add(null, {
                 caption: v.filename,
@@ -98,9 +98,14 @@ class FileManagementUI {
 
             $(addedNode).dblclick(function () {
                 if (v.isdir) {
+                    if (instance.pathIndex < instance.pathArr.length - 1) {
+                        console.log(instance.pathIndex, instance.pathArr);
+                        instance.pathArr.splice(instance.pathIndex + 1)
+                    }
                     instance.currentDirectory += v.filename + '\\';
                     instance.FetchPath(instance.currentDirectory);
                 }
+                console.log(instance.pathArr);                
             });
         });
 
@@ -166,14 +171,26 @@ class FileManagementUI {
         });
     }
 
-    UIBindHTMLElement() {
-
+    UIAddressBarElement() {
+        this.UIWindowsPath.html('');
+        var curPathArr = this.currentDirectory.split('\\');
+        var pathContent = curPathArr.map(function (v) {
+            if (v === "")
+                return '';
+            var linkContainer = $('<div>')
+            var aPath = $('<a href="#">');
+            aPath.html(`<span>${v}</span>`)
+            linkContainer.append(aPath)
+            linkContainer.append('&nbsp;<i class="fa fa-caret-right"></i>&nbsp;')
+            return linkContainer;
+        });
+        this.UIWindowsPath.append(pathContent);
     }
 
     BindEvents() {
         this.BindChangeView();
         this.BindUIBackButtonClick();
         this.BindUIForwardButtonClick();
-        this.UIBindHTMLElement();
+        this.UIAddressBarElement();
     }
 }

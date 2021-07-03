@@ -16,6 +16,5 @@ function initScreenUI() {
 }
 
 function initFileUI() {
-    console.log('init fileui');
     fileManagementUI.InitializeFileManager();
 }

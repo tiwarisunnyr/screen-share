@@ -5,9 +5,9 @@ let fileManagementUI = new FileManagementUI();
 $(function () {
     var hash = location.hash;
     var target = hash.length > 0 ? hash.substr(1) : "dashboard";
-    var link = $(".navview-menu a[href*=" + target + "]");
-    var menu = link.closest("ul[data-role=dropdown]");
-    var node = link.parent("li").addClass("active");
+    //var link = $(".navview-menu a[href*=" + target + "]");
+    //var menu = link.closest("ul[data-role=dropdown]");
+    //var node = link.parent("li").addClass("active");
 
 
     wsClient.initConnection(); //create websocket connection
