@@ -32,6 +32,8 @@ class FileManagementUI {
         this.UIForwardButton;
         this.UIWindowsPath;
         this.UIChangeView;
+        this.UIInfoBoxElement;
+        this.UISideBarElement;
         this.fileManagement = new FileManagement();
     }
 
@@ -42,12 +44,20 @@ class FileManagementUI {
         this.UIChangeView = $('.change-view');
 
         this.fileManagement.ListDrive();
+        setTimeout(() => {
+            this.UISideBarElement = Metro.getPlugin('#sbDriveList', 'sidebar');
+            this.UISideBarElement.open();
+            console.log(this.UISideBarElement);
+            this.UISideBarElement.options.shift = '.shift-filelist';
+        }, 0);
         this.BindEvents();
     }
 
     FetchPath(path) {
         if (this.isFetching)
             return;
+
+        this.InfoBox('<span class="mif-spinner4 ani-pulse mif-3x"></span>');
 
         if ($.inArray(path, this.pathArr) == -1) {
             this.pathIndex++;
@@ -67,6 +77,7 @@ class FileManagementUI {
                 content: "<div class='mt-1' data-role='progress' data-value='" + v.percentusage + "' data-small='true'></div><div>" + formatBytes(v.freebytes, 2) + " free of " + formatBytes(v.totalsize, 0) + "</div>",
             });
             $(addedNode).click(function () {
+                Metro.sidebar.close('#sbDriveList');
                 instance.pathArr = [];
                 instance.pathIndex = -1;
                 instance.currentDirectory = v.mountpoint + '\\';
@@ -76,6 +87,13 @@ class FileManagementUI {
     }
 
     FillDirectories(data) {
+        if (this.UIInfoBoxElement) {
+            this.UIInfoBoxElement.close();
+            this.UIInfoBoxElement = undefined;
+        }
+
+        //Check For Error in folder fetch and handle accordingly
+
         var instance = this;
         var ulfileInfo = Metro.getPlugin('#lstfileInfo', 'listview');
         $('#lstfileInfo').empty();
@@ -99,13 +117,11 @@ class FileManagementUI {
             $(addedNode).dblclick(function () {
                 if (v.isdir) {
                     if (instance.pathIndex < instance.pathArr.length - 1) {
-                        console.log(instance.pathIndex, instance.pathArr);
                         instance.pathArr.splice(instance.pathIndex + 1)
                     }
                     instance.currentDirectory += v.filename + '\\';
                     instance.FetchPath(instance.currentDirectory);
                 }
-                console.log(instance.pathArr);                
             });
         });
 
@@ -117,9 +133,7 @@ class FileManagementUI {
     }
 
     ShowInfo(data, sender, inplace) {
-        var fileInfo = `Name : ${data.filename}
-            <br>Type : ${(data.isdir ? 'File Folder' : 'File')}
-            <br>Size : ${(data.isdir ? 0 : formatBytes(data.size))}`;
+        var fileInfo = `Name : ${data.filename}<br>Type : ${(data.isdir ? 'File Folder' : 'File')}<br>Size : ${(data.isdir ? 0 : formatBytes(data.size))}`;
 
         //if (inplace)
         //    $('#fDetails').html(fileInfo);
@@ -172,19 +186,43 @@ class FileManagementUI {
     }
 
     UIAddressBarElement() {
+        var instance = this;
         this.UIWindowsPath.html('');
         var curPathArr = this.currentDirectory.split('\\');
-        var pathContent = curPathArr.map(function (v) {
+        var pathContent = curPathArr.map(function (v, idx) {
             if (v === "")
                 return '';
             var linkContainer = $('<div>')
             var aPath = $('<a href="#">');
             aPath.html(`<span>${v}</span>`)
+            aPath.click(function () {
+                instance.pathIndex = idx;
+                instance.currentDirectory = instance.pathArr[instance.pathIndex];
+                instance.FetchPath(instance.currentDirectory);
+                if (idx === 0) {
+                    instance.UIBackButton.removeClass("fg-blue").addClass("fg-gray")
+                }
+                if (idx === instance.pathArr.length - 1) {
+                    instance.UIForwardButton.removeClass("fg-blue").addClass("fg-gray")
+                }
+            });
             linkContainer.append(aPath)
             linkContainer.append('&nbsp;<i class="fa fa-caret-right"></i>&nbsp;')
             return linkContainer;
         });
         this.UIWindowsPath.append(pathContent);
+    }
+
+    InfoBox(htmlContent) {
+        var el = Metro.infobox.create(
+            htmlContent,
+            "",
+            {
+                closeButton: false,
+                width: 'auto'
+            }
+        );
+        this.UIInfoBoxElement = $(el).data('infobox');
     }
 
     BindEvents() {

@@ -72,19 +72,22 @@ func GetDriveListJSON() string {
 func FetchDrives(root string) []DirectoryInfo {
 
 	isWindowsSystem := true
+	separator := "\\"
 	if runtime.GOOS != "windows" {
 		isWindowsSystem = false
+		separator = "/"
 	}
 
 	if !isWindowsSystem {
 		pathArr := strings.Split(root, "\\")
-		root = strings.Join(pathArr, "/")
+		root = strings.Join(pathArr, separator)
 	}
 	fmt.Println(root)
 
 	file, err := os.Open(root)
 	if err != nil {
-		log.Fatalf("failed opening directory: %s", err)
+		log.Printf("failed opening directory: %s", err.Error())
+
 	}
 	defer file.Close()
 
@@ -92,6 +95,7 @@ func FetchDrives(root string) []DirectoryInfo {
 	if len(fileList) > 0 {
 		var directoryInfos []DirectoryInfo
 		for _, files := range fileList {
+			fmt.Println(files)
 			directoryInfo := &DirectoryInfo{
 				FileName:     files.Name(),
 				FileSize:     uint64(files.Size()),

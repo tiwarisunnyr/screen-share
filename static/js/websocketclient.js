@@ -1,8 +1,11 @@
-function WebSocketClient() {
-    this.conn = undefined;
-    let instance = this;
+class WebSocketClient {
+    constructor() {
+        this.conn = undefined;
+    }
 
-    this.initConnection = function () {
+    initConnection() {
+        let instance = this;
+
         instance.conn = new WebSocket("ws://" + document.location.host + "/ws");
         instance.conn.onclose = function (evt) {
             console.log("Connection Closed", evt);
@@ -10,14 +13,14 @@ function WebSocketClient() {
         instance.conn.onmessage = instance.handleEvents;
     };
 
-    this.handleEvents = function (evt) {
+    handleEvents(evt) {
         var data = JSON.parse(evt.data);
         switch (data.type) {
             case INIT_CONNECTION:
                 ClientID = data.message;
                 break;
             case READY_STREAM:
-                console.log("Already Running")
+                console.log("Already Running");
                 break;
             case START_STREAM:
                 remoteObject.drawScreen(ctx, data);
@@ -29,7 +32,7 @@ function WebSocketClient() {
                 fileManagementUI.FillDrives(JSON.parse(data.message));
                 break;
             case FETCH_PATH:
-                fileManagementUI.FillDirectories(JSON.parse(data.message))
+                fileManagementUI.FillDirectories(JSON.parse(data.message));
                 break;
             default:
 
@@ -38,25 +41,31 @@ function WebSocketClient() {
         //instance.sendAck();
     };
 
-    this.send = function (msg) {
-        instance.conn.send(JSON.stringify(msg))
+    send(msg) {
+        let instance = this;
+
+        instance.conn.send(JSON.stringify(msg));
     };
 
-    this.sendAck = function () {
+    sendAck() {
+        let instance = this;
+
         instance.conn.send(JSON.stringify({
             type: ACK_RESPONSE,
             message: '',
             to: ClientID,
             from: FROM
-        }))
+        }));
     };
 
-    this.reInitConnection = function () {
+    reInitConnection() {
+        let instance = this;
+
         if (instance.conn) {
             clearScreen();
             //Close prev connection if exists
             instance.conn.close();
         }
-        instance.initConnection()
-    }
+        instance.initConnection();
+    };
 }
