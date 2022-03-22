@@ -1,5 +1,5 @@
 # R-Mgmt
-A simple screen Remote Access Program.
+A simple Remote Access Program.
 
 Implementations
 1. Remote file accessing over web socket
