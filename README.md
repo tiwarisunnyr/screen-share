@@ -1,5 +1,9 @@
-# screen-share
-A simple screen share demo program.
+# R-Mgmt
+A simple screen Remote Access Program.
+
+Implementations
+1. Remote file accessing over web socket
+2. "View only" remote access 
 
 
 

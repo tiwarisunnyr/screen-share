@@ -1,7 +1,7 @@
 package main
 
 import (
-	server "./server"
+	server "R-Mgmt/server"
 )
 
 func main() {

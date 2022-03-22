@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	"../capture"
-	"../diskmanagement"
+	"R-Mgmt/capture"
+	"R-Mgmt/diskmanagement"
 )
 
 var streamingClients map[string]bool = make(map[string]bool)
@@ -23,9 +23,10 @@ func HandleClientMessage(h *Hub, clientmessage *Message) {
 					streamingClients[client.id] = true
 					go func() {
 						for streamingClients[client.id] {
-							log.Println("sending stream to " + clientmessage.To)
+							//log.Println("sending stream to " + clientmessage.To)
 							sendStream, encStream := capture.DifferentialCapture()
 							if sendStream {
+								log.Println("Sending Differential Stream to " + clientmessage.To)
 								err := client.conn.WriteJSON(&Message{To: clientmessage.To, Message: encStream, Type: START_STREAM, From: "SERVER"})
 								if err != nil {
 									log.Println(err.Error())
